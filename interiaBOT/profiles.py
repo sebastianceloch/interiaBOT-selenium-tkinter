@@ -12,28 +12,6 @@ import undetected_chromedriver as uc
 
 
 class ProfilesMenu:
-    def __init__(self, tab):
-        self.tab = tab
-
-        # Textbox profiles
-        self.textbox_label = customtkinter.CTkLabel(master=self.tab, text="Enter profiles below:")
-        self.textbox_label.grid(row=0, column=0)
-        self.profile_textbox = customtkinter.CTkTextbox(master=self.tab, width=500, height=500,
-                                                        corner_radius=20)
-        self.profile_textbox.grid(row=1, column=0, padx=20)
-
-        # Save profiles button
-        self.save_button = customtkinter.CTkButton(master=self.tab, text="Save profiles",
-                                                   command=self.save_profiles)
-        self.save_button.grid(row=1, column=1, padx=20)
-
-        # Clear profiles button
-        self.clear_button = customtkinter.CTkButton(master=self.tab, text="Clear profiles",
-                                                    command=self.clear_profiles)
-        self.clear_button.grid(row=1, column=2, padx=30)
-
-        self.load_profiles()
-
     def validate_profile_format(self, profile):
         pattern = re.compile(r'^[^\s@]+@[^\s@]+\.[^\s@]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*$')
         return bool(pattern.match(profile))
@@ -66,3 +44,24 @@ class ProfilesMenu:
                 self.profile_textbox.insert(INSERT, profiles_content)
         except FileNotFoundError:
             pass
+    def __init__(self, tab):
+        self.tab = tab
+
+        # Textbox profiles
+        self.textbox_label = customtkinter.CTkLabel(master=self.tab, text="Enter profiles below:")
+        self.textbox_label.grid(row=0, column=0)
+        self.profile_textbox = customtkinter.CTkTextbox(master=self.tab, width=500, height=500,
+                                                        corner_radius=20)
+        self.profile_textbox.grid(row=1, column=0, padx=20)
+
+        # Save profiles button
+        self.save_button = customtkinter.CTkButton(master=self.tab, text="Save profiles",
+                                                   command=self.save_profiles)
+        self.save_button.grid(row=1, column=1, padx=20)
+
+        # Clear profiles button
+        self.clear_button = customtkinter.CTkButton(master=self.tab, text="Clear profiles",
+                                                    command=self.clear_profiles)
+        self.clear_button.grid(row=1, column=2, padx=30)
+
+        self.load_profiles()
