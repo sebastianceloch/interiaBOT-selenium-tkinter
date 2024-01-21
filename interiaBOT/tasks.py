@@ -61,6 +61,7 @@ class Tasks:
                 'surname': entry_data[2],
                 'password': entry_data[3]
             })
+        profile_name = profile_result[index]['name']
         print(profile_list)
         if proxy_list != "":
             proxy_result = []
@@ -89,6 +90,10 @@ class Tasks:
                   'Październik', 'Listopad', 'Grudzień']
         print(proxy_list)
         driver = uc.Chrome(seleniumwire_options=options)
+        self.task_textbox.configure(state="normal")
+        self.task_textbox.delete(1.0, 2.0)
+        self.task_textbox.insert(INSERT, f'Starting task:...{index+1}/{len(self.profiles_for_task())}\n')
+        self.task_textbox.configure(state="disable")
         driver.get("https://konto-pocztowe.interia.pl/#/nowe-konto/darmowe")
         driver.find_element(By.XPATH, "//button[@class='rodo-popup-agree rodo-popup-main-agree']").click()
         # name surname
@@ -123,7 +128,7 @@ class Tasks:
             # start
             t.start()
             # delay taska o 2 sekundy
-            time.sleep(2)
+            time.sleep(0.2)
             print(t.name + ' started!')
             thread_list.append(t)
         for thread in thread_list:
@@ -205,10 +210,9 @@ class Tasks:
         self.task_textbox = customtkinter.CTkTextbox(master=self.tab, width=400, height=250, corner_radius=20,
                                                      state="disabled")
         self.task_textbox.grid(row=2, column=2, padx=50)
-
         # Start task button
         self.start_button = customtkinter.CTkButton(master=self.tab, text="Start Task",
-                                                    command=self.start_button)
+                                                    command=threading.Thread(target=self.start_button).start)
         self.start_button.grid(row=3, column=2, pady=20)
 
         # Stop task button
