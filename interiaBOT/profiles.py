@@ -29,7 +29,7 @@ class ProfilesMenu:
                 invalid_profiles.append(profile)
         try:
             with open('..\infoFiles\profiles.txt', 'w') as file:
-                file.write('\n'.join(valid_profiles) + '\n')
+                file.write('\n'.join(profiles) + '\n')
         except FileNotFoundError:
             pass
 

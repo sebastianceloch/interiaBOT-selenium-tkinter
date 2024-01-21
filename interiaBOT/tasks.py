@@ -8,8 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import topLevel
-import undetected_chromedriver as uc
-
+import seleniumwire.undetected_chromedriver as uc
 class Tasks:
     def proxies_for_task(self):
         proxy_list = []
@@ -36,9 +35,22 @@ class Tasks:
             return False
         return profile_list
 
+    def create_options(self, proxy_list, index):
+        options = {'disable_capture': True, 'proxy': {}}
+
+        proxy_str = proxy_list[index]
+        parts = proxy_str.split(':')
+        login, password, ip, port = parts[0], parts[1], parts[2], parts[3]
+
+        http_proxy = f'http://{login}:{password}@{ip}:{port}'
+        https_proxy = f'https://{login}:{password}@{ip}:{port}'
+
+        options['proxy']['http'] = http_proxy
+        options['proxy']['https'] = https_proxy
+
+        return options
     def create_interia_emails(self, index):
         proxy_list = self.proxies_for_task()
-        # TU TE PROFILE PO PIZDZIE SA TRZEBA ZESPLITOWAC JAKOS DOBRZE MZOE KOLEJNA FUNKCJA?
         profile_list = self.profiles_for_task()
         profile_result = []
         for entry in profile_list:
@@ -50,9 +62,31 @@ class Tasks:
                 'password': entry_data[3]
             })
         print(profile_list)
+        proxy_result = []
+        for proxy in proxy_list:
+            proxy_data = proxy.split(':')
+            proxy_result.append({
+                'login': proxy_data[0],
+                'password': proxy_data[1],
+                'ip': proxy_data[2],
+                'port': proxy_data[3]
+            })
+        print(proxy_result[index])
+        proxy_login = proxy_result[index]['login']
+        proxy_password = proxy_result[index]['password']
+        proxy_ip = proxy_result[index]['ip']
+        proxy_port = proxy_result[index]['port']
+        options = {
+            'proxy': {
+                'http': f'http://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
+                'https': f'https://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
+                'no_proxy': 'localhost,127.0.0.1'
+            }
+        }
         months = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień',
                   'Październik', 'Listopad', 'Grudzień']
-        driver = uc.Chrome()
+
+        driver = uc.Chrome(seleniumwire_options=options)
         driver.get("https://konto-pocztowe.interia.pl/#/nowe-konto/darmowe")
         driver.find_element(By.XPATH, "//button[@class='rodo-popup-agree rodo-popup-main-agree']").click()
         # name surname
@@ -78,9 +112,10 @@ class Tasks:
 
     def subprocess_create_emails(self):
         # dodac target w wywolaniu moze?
+        loop_range = len(self.profiles_for_task())
         thread_list = list()
         # petla ile threadow
-        for x in range(2):
+        for x in range(loop_range):
             # tworzenie threadu
             t = threading.Thread(name='Test {}'.format(x), target=self.create_interia_emails(x))
             # start
