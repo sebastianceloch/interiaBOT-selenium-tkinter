@@ -19,7 +19,7 @@ class Tasks:
             except FileNotFoundError:
                 print("File not found")
         else:
-            return False
+            return ""
         return proxy_list
 
     def profiles_for_task(self):
@@ -62,30 +62,32 @@ class Tasks:
                 'password': entry_data[3]
             })
         print(profile_list)
-        proxy_result = []
-        for proxy in proxy_list:
-            proxy_data = proxy.split(':')
-            proxy_result.append({
-                'login': proxy_data[0],
-                'password': proxy_data[1],
-                'ip': proxy_data[2],
-                'port': proxy_data[3]
-            })
-        print(proxy_result[index])
-        proxy_login = proxy_result[index]['login']
-        proxy_password = proxy_result[index]['password']
-        proxy_ip = proxy_result[index]['ip']
-        proxy_port = proxy_result[index]['port']
-        options = {
-            'proxy': {
-                'http': f'http://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
-                'https': f'https://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
-                'no_proxy': 'localhost,127.0.0.1'
+        if proxy_list != "":
+            proxy_result = []
+            for proxy in proxy_list:
+                proxy_data = proxy.split(':')
+                proxy_result.append({
+                    'login': proxy_data[0],
+                    'password': proxy_data[1],
+                    'ip': proxy_data[2],
+                    'port': proxy_data[3]
+                })
+            proxy_login = proxy_result[index]['login']
+            proxy_password = proxy_result[index]['password']
+            proxy_ip = proxy_result[index]['ip']
+            proxy_port = proxy_result[index]['port']
+            options = {
+                'proxy': {
+                    'http': f'http://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
+                    'https': f'https://{proxy_login}:{proxy_password}@{proxy_ip}:{proxy_port}',
+                    'no_proxy': 'localhost,127.0.0.1'
+                }
             }
-        }
+        else:
+            options = {}
         months = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień',
                   'Październik', 'Listopad', 'Grudzień']
-
+        print(proxy_list)
         driver = uc.Chrome(seleniumwire_options=options)
         driver.get("https://konto-pocztowe.interia.pl/#/nowe-konto/darmowe")
         driver.find_element(By.XPATH, "//button[@class='rodo-popup-agree rodo-popup-main-agree']").click()
