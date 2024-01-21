@@ -7,7 +7,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.title("InterBOT")
-        #self.wm_iconbitmap('media\interbot.ico')
+        self.wm_iconbitmap('..\media\interbot.ico')
         customtkinter.set_appearance_mode("dark")
 
         self.tab_view = tabs.MyTabView(master=self, width=800, height=600, corner_radius=20)

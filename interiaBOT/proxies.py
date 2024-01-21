@@ -38,8 +38,8 @@ class Proxies:
         if invalid_proxies:
             self.open_toplevel()
         try:
-            with open("infoFiles\proxy.txt", 'w') as file:
-                file.write('\n'.join(valid_proxies) + '\n')
+            with open("..\infoFiles\proxy.txt", 'w') as file:
+                file.write('\n'.join(proxies) + '\n')
         except FileNotFoundError:
             pass
 
@@ -48,7 +48,7 @@ class Proxies:
 
     def load_proxies(self):
         try:
-            with open('infoFiles\proxy.txt', 'r') as file:
+            with open('..\infoFiles\proxy.txt', 'r') as file:
                 proxies_content = file.read()
                 self.proxy_textbox.delete(1.0, END)
                 self.proxy_textbox.insert(INSERT, proxies_content)
